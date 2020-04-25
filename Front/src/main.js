@@ -1,29 +1,31 @@
 import Vue from 'vue'
-import Vuex from 'vuex';
 import App from './App.vue'
 import router from './router'
 
-Vue.use(Vuex);
-
 Vue.config.productionTip = false
 
-const store = new Vuex.Store({
-  state: {
-    activeUserName: 'Guest',
-    activeUserId: null
-  },
-  mutations: {
-    updateActiveUserName: function(state, newActiveUser) { 
-      state.activeUserName = newActiveUser.userName;
-      state.activeUserId = newActiveUser.id;
-    }
+
+let globalData = new Vue({
+  data: { 
+    $activeUserName: 'Guest',
+    $activeUserId: null
   }
 });
+Vue.mixin({
+  computed: {
+    $activeUserName: {
+      get: function () { return globalData.$data.$activeUserName },
+      set: function (newactiveUserName) { globalData.$data.$activeUserName = newactiveUserName; }
+    },
+    $activeUserId: {
+      get: function () { return globalData.$data.$activeUserId },
+      set: function (newActiveUserId) { globalData.$data.$activeUserId = newActiveUserId; }
+    }
+  }
+})
 
 
 new Vue({
-  router,
-  store,
-  
+  router,  
   render: function (h) { return h(App) }
 }).$mount('#app')

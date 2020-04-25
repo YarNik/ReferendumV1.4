@@ -1,6 +1,6 @@
 <template>
   <div>    
-    <h2>{{$store.state.activeUserName}}, welcome to referendums!</h2> 
+    <h2>{{ $activeUserName }}, welcome to referendums! </h2> 
     <p> 
         <span>Enter user name: </span>
         <input type="text" v-on:input="SetUserName" />
@@ -44,8 +44,9 @@ export default {
             });             
             if (response.ok) { 
                 if (response.status == 200) {
-                    let json = await response.json();                   
-                    this.$store.commit('updateActiveUserName', json);                                     
+                    let json = await response.json();                  
+                    this.$activeUserName = json.userName;
+                    this.$activeUserId = json.id;
                 } else {
                     alert("Invalid username or password, try again.");
                 }               

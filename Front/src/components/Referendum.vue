@@ -1,6 +1,6 @@
 <template>
   <div class="hello">    
-    <h2>{{$store.state.activeUserName}}, welcome to referendums!</h2>    
+    <h2>{{ $activeUserName }}, welcome to referendums! </h2>    
     <button v-on:click="GetJsonPropositions" class="refresh">Refresh</button><br>   
             
     <ul v-for="item in namesProposition">{{item}}
@@ -8,12 +8,12 @@
             <span>{{element.appellation}}</span>
             <span class = "blockButtonVote">
                 <span>{{element.amount}}</span>
-                <button v-on:click="SetVote(element.idAnswer)" v-if="$store.state.activeUserName != 'Guest'">Vote</button> 
+                <button v-on:click="SetVote(element.idAnswer)" v-if="$activeUserName != 'Guest'">Vote</button> 
             </span>
         </li>        
     </ul>    
     
-    <button v-on:click="visibleAddAnswer=!visibleAddAnswer" v-if="$store.state.activeUserName != 'Guest'" class="main">Add answer</button><br> 
+    <button v-on:click="visibleAddAnswer=!visibleAddAnswer" v-if="$activeUserName != 'Guest'" class="main">Add answer</button><br> 
     <div v-if="visibleAddAnswer" class="addReferendum">
         <button v-on:click="ReceiveAllPropositions" class="main">Receive propositions</button>
         <select v-model="selectedProposition">
@@ -25,7 +25,7 @@
         <button v-on:click="SendAnswer">Save answer</button>  
 
     </div>
-    <button v-on:click="visibleAddReferendum=!visibleAddReferendum" v-if="$store.state.activeUserName != 'Guest'" class="main">Add referendum</button> 
+    <button v-on:click="visibleAddReferendum=!visibleAddReferendum" v-if="$activeUserName != 'Guest'" class="main">Add referendum</button> 
 
     <div v-if="visibleAddReferendum" class="addReferendum">        
         <label>Proposition</label>
@@ -52,7 +52,7 @@ export default {
             propositions: [],
             namesProposition : [],
             namesPropositionAndId : [],
-            nameUserId: this.$store.state.activeUserId,
+            //nameUserId: this.$activeUserId,
             proposition: '',
             maxOwnAnswers: '',
             maxAmountAnswers: '',
@@ -65,7 +65,9 @@ export default {
     }
   },
     methods:{              
-            GetJsonPropositions: async function(){                             
+            GetJsonPropositions: async function(){  
+                //console.log(this.nameUserId);
+                //console.log(this.$activeUserId);                            
                 let url = 'https://localhost:44372/api/Home';
                 let response = await fetch(url);
                 let responseJson = await response.json();
@@ -94,7 +96,7 @@ export default {
                 let url = 'https://localhost:44372/api/Home/5/Vote';
                 let allAnswer = {
                     IdAnswer: IdAnswer,
-                    IdUser: this.nameUserId                    
+                    IdUser: this.$activeUserId                    
                 };
                 let response = await fetch(url, {
                     method: 'POST',                    
@@ -110,7 +112,7 @@ export default {
                 let url = 'https://localhost:44372/api/Home/5/AddReferendum';
                 let referendum = {
                     Proposition: this.proposition,
-                    Autor: this.nameUserId, 
+                    Autor: this.$activeUserId, 
                     Active: 1,
                     Published: 1,
                     MaxOwnAnswers: Number(this.maxOwnAnswers),
@@ -142,7 +144,7 @@ export default {
                 let answer = {
                     Referendum: Number(this.selectedProposition),
                     Appellation: this.newAnswer,
-                    AnswerAutor: Number(this.nameUserId)
+                    AnswerAutor: Number(this.$activeUserId)
                 }
                 let response = await fetch(url, {
                     method: 'POST',                    
