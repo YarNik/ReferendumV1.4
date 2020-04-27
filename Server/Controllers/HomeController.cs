@@ -17,25 +17,25 @@ namespace WebServer.Controllers
         {
             db = context;
         }
-        // GET: api/Home
-        [HttpGet]
-        public ActionResult<IEnumerable<GetReferendums>> Get()
+        
+        [Route("{id}/GetReferendums")]
+        public ActionResult<IEnumerable<GetReferendums>> GetRefer([FromBody] User user)
         {
-            return db.GetReferendumsDb();
+            return db.GetReferendumsDbNew(user);
         }
-
+        
         // GET: api/Home/5
-        [HttpGet("{id}", Name = "Get")]
+        /*[HttpGet("{id}", Name = "Get")]
         public string Get(string id)
         {
             return "value";
         }
 
-        /*[Route("{id}/update")]
+        [Route("{id}/update")]
         public string GetId(string id)
         {
             return id;
-        }*/
+        }
 
         // POST: api/Home
         [HttpPost]
@@ -43,7 +43,7 @@ namespace WebServer.Controllers
         {
             db.Create(newUser);
             return Ok(newUser);
-        }
+        }*/
 
         [Route("{id}/Vote")]
         public IActionResult AddVote([FromBody] AllAnswer answer)

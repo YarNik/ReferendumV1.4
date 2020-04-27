@@ -18,6 +18,7 @@ namespace WebServer.Models
         public string Appellation { get; set; }
         public int IdAnswer { get; set; }
         public int Amount { get; set; }
+        public int VotesAmount { get; set; }
     }
     public class AllAnswer
     {

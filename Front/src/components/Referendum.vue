@@ -3,12 +3,12 @@
     <h2>{{ $activeUserName }}, welcome to referendums! </h2>    
     <button v-on:click="GetJsonPropositions" class="refresh">Refresh</button><br>   
             
-    <ul v-for="item in namesProposition">{{item}}
-        <li v-for="element in propositions" v-if="item == element.proposition">
+    <ul v-for="item in namesProposition">{{item.proposition}}
+        <li v-for="element in propositions" v-if="item.proposition == element.proposition">
             <span>{{element.appellation}}</span>
             <span class = "blockButtonVote">
                 <span>{{element.amount}}</span>
-                <button v-on:click="SetVote(element.idAnswer)" v-if="$activeUserName != 'Guest'">Vote</button> 
+                <button v-on:click="SetVote(element.idAnswer)" v-if="$activeUserName != 'Guest' && item.votesAmount > 0">Vote</button> 
             </span>
         </li>        
     </ul>    
@@ -64,31 +64,54 @@ export default {
             newAnswer: ''
     }
   },
-    methods:{              
-            GetJsonPropositions: async function(){  
-                //console.log(this.nameUserId);
-                //console.log(this.$activeUserId);                            
-                let url = 'https://localhost:44372/api/Home';
-                let response = await fetch(url);
+    methods:{        
+
+            GetJsonPropositions: async function(){                                
+                let url = 'https://localhost:44372/api/Home/5/GetReferendums';
+
+                let user = {                
+                    id: Number(this.$activeUserId)                    
+                };
+                let response = await fetch(url, {
+                    method: 'POST',                    
+                    headers: {
+                    'Content-Type': 'application/json;charset=utf-8'                                              
+                    },
+                    body: JSON.stringify(user)                   
+                });          
+
                 let responseJson = await response.json();
                 this.propositions = [];
                 responseJson.forEach(element => {                    
-                    this.propositions.push(element)
+                    this.propositions.push(element)                   
                 });
                 this.namesProposition = [];
-                this.namesProposition.push(this.propositions[0].proposition);                
+                this.namesProposition.push({
+                            proposition: this.propositions[0].proposition,
+                            votesAmount: 100
+                    });                
                 this.propositions.forEach(item => {
                     let isInArray = false;
                     for (let i = 0; i < this.namesProposition.length; i++) {
-                        if (this.namesProposition[i] == item.proposition) {                            
+                        if (this.namesProposition[i].proposition == item.proposition) {                            
                             isInArray = true;                            
                             break;
                         }                        
                     }
                     if (! isInArray) {
-                        this.namesProposition.push(item.proposition);
+                        this.namesProposition.push({
+                            proposition: item.proposition,
+                            votesAmount: 100
+                            });                        
                     }                    
-                });                
+                });
+                this.namesProposition.forEach(item => {
+                    this.propositions.forEach(element => {
+                        if (element.proposition == item.proposition) {
+                            if (element.votesAmount < item.votesAmount) item.votesAmount = element.votesAmount;
+                        }
+                    });                   
+                });
             },
 
             SetVote: async function(IdAnswer){

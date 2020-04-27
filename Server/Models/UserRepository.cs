@@ -14,7 +14,8 @@ namespace WebServer.Models
         void Delete(int id);
         User Get(int id);
         User Authorize(User user);
-        List<GetReferendums> GetReferendumsDb();
+        //List<GetReferendums> GetReferendumsDb();
+        List<GetReferendums> GetReferendumsDbNew(User user);
         List<ReceiveAllReferendums> ReceiveAllReferendumsDb();
         void Vote(AllAnswer answer);
         void AddReferendum(Referendum referendum);
@@ -29,11 +30,11 @@ namespace WebServer.Models
             connectionString = conn;
         }
         
-        public List<GetReferendums> GetReferendumsDb()
+        public List<GetReferendums> GetReferendumsDbNew(User user)
         {
             using (IDbConnection db = new SqlConnection(connectionString))
             {
-                return db.Query<GetReferendums>("SELECT Referendum.Id, Referendum.Proposition, Answer.Appellation, Answer.id as IdAnswer, COUNT(*) - 1 as Amount FROM Referendum, Answer, AllAnswers WHERE Answer.Referendum = Referendum.id AND AllAnswers.idAnswer = Answer.id GROUP BY Answer.id, Answer.Appellation, Referendum.Proposition, Referendum.Id").ToList();
+                return db.Query<GetReferendums>("SELECT Referendum.Proposition, Answer.Appellation, Answer.id AS IdAnswer, COUNT(*) - 1  AS Amount, Referendum.MaxAmountAnswers - (SELECT COUNT(*) FROM AllAnswers WHERE AllAnswers.IdUser = @Id AND AllAnswers.idAnswer = Answer.id) AS VotesAmount FROM Referendum, Answer, AllAnswers WHERE Answer.Referendum = Referendum.id AND AllAnswers.idAnswer = Answer.id GROUP BY Answer.id, Answer.Appellation, Referendum.Proposition, Referendum.MaxAmountAnswers", new { Id = user.Id }).ToList();            
             }
         }
 
