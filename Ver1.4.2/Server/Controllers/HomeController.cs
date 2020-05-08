@@ -36,6 +36,65 @@ namespace WebServer.Controllers
             return db.GetMyReferendumsDb(id);
         }
 
+        [Route("{id}/GetMyReferendumsNotPublic")]
+        public ActionResult<IEnumerable<MyReferendumNotPublic>> GetMyReferNotPublic(string id)
+        {
+            return db.GetMyReferendumsNotPublicDb(id);
+        }
+
+        [Route("{id}/Publish")]
+        public string GetId(string id)
+        {
+            db.Publish(id);
+            return id;
+        }
+
+        [Route("{id}/GetMyEditableReferendum")]
+        public ActionResult<Referendum> GetMyEditableRefer(string id)
+        {
+            return db.GetMyEditableReferendumDb(id);
+        }
+
+        [Route("{id}/GetMyEditableReferendumAnswers")]
+        public ActionResult<IEnumerable<AddAnswer>> GetMyEditableReferAnswers(string id)
+        {
+            return db.GetMyEditableReferendumAnswers(id);
+        }
+
+        [Route("{id}/DeleteAnswer")]
+        public void DeleteAnswer(string id)
+        {
+            db.DeleteAnswerDb(id);
+        }
+
+        [Route("{id}/ChangePropositionName")]
+        public IActionResult ChangePropositionName([FromBody] ReceiveAllReferendums newName)
+        {
+            db.ChangePropositionNameDb(newName);
+            return Ok(newName);
+        }
+
+        [Route("{id}/ChangeMaxOwnAnswers")]
+        public IActionResult ChangeMaxOwnAnswers([FromBody] Referendum edittedReferendum)
+        {
+            db.ChangeMaxOwnAnswersDb(edittedReferendum);
+            return Ok(edittedReferendum);
+        }
+
+        [Route("{id}/ChangeMaxAmountAnswers")]
+        public IActionResult ChangeMaxAmountAnswers([FromBody] Referendum edittedReferendum)
+        {
+            db.ChangeMaxAmountAnswersDb(edittedReferendum);
+            return Ok(edittedReferendum);
+        }
+
+        [Route("{id}/ChangeDeadLine")]
+        public IActionResult ChangeDeadLine([FromBody] Referendum edittedReferendum)
+        {
+            db.ChangeDeadLineDb(edittedReferendum);
+            return Ok(edittedReferendum);
+        }
+
         // GET: api/Home/5
         /*[HttpGet("{id}", Name = "Get")]
         public string Get(string id)

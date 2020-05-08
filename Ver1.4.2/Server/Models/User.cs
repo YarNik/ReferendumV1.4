@@ -35,6 +35,13 @@ namespace WebServer.Models
         public string Proposition { get; set; }
         public string Appellation { get; set; }
         public string AnswerAutor { get; set; }
+        public int Published { get; set; }
+    }
+    public class MyReferendumNotPublic
+    {
+        public int Id { get; set; }
+        public string Proposition { get; set; }
+        
     }
     public class AllAnswer
     {
