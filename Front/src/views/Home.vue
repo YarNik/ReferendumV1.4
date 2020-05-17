@@ -1,6 +1,7 @@
 <template>
   <div class="home">    
     <Referendum/>
+    <span>test new branch2 17.05</span>
   </div>
 </template>
 
